@@ -1,0 +1,22 @@
+{
+  "name": "frontend-nanodegree-neighborhood-map",
+  "homepage": "https://github.com/10eputzen/frontend-nanodegree-neighborhood-map",
+  "authors": [
+    "10eputzen <stef.development@gmail.com>"
+  ],
+  "description": "",
+  "main": "app/index.html",
+  "license": "MIT",
+  "directory": "app/bower_components",
+  "ignore": [
+    "**/.*",
+    "node_modules",
+    "bower_components",
+    "test",
+    "tests"
+  ],
+  "dependencies": {
+    "bootstrap": "^3.3.7",
+    "underscore": "^1.8.3"
+  }
+}
