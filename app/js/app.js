@@ -6,24 +6,7 @@ $("#menu-toggle").click(function(e) {
 
 var self = this;
 var map;
-var infowindow;
 
-self.listOfObject = [{
-    position: {
-        lat: 50.08877,
-        lng: 8.4579088,
-    },
-    map: map,
-    title: 'Feuerwehr'
-
-}, {
-    position: {
-        lat: 50.09071,
-        lng: 8.4603596
-    },
-    map: map,
-    title: 'Polizei'
-}]
 
 
 var ObjectList = function() {
@@ -51,7 +34,6 @@ function AppViewModel() {
             // var info = infowindows.find(function(o) {
             //     return o.name === obj.name;
             // })
-
         createInfoWindow(mark);
 
         // if (isInfoWindowOpen(info)) {
@@ -123,49 +105,6 @@ function initMap() {
     });
 
 
-    // for (i = 0; i < self.listOfObject.length; i++) {
-    //     markers[i] = new google.maps.Marker({
-    //         position: self.listOfObject[i].position,
-    //         map: map,
-    //         title: listOfObject[i].title
-    //     });
-
-    //     markers[i].index = i;
-    //     contents[i] = '<div class="popup_container">' + self.listOfObject[i].title + '</div>';
-
-
-    // infowindows[i] = new google.maps.InfoWindow({
-    //     content: contents[i],
-    //     maxWidth: 300,
-    //     title: listOfObject[i].title
-    // });
-
-    //     google.maps.event.addListener(markers[i], 'click', function() {
-    //         map.panTo(markers[this.index].getPosition());
-    //         infowindows[this.index].open(map, markers[this.index]);
-    //     });
-    // }
-
-
-    // var marker_home = new google.maps.Marker({
-    //     position: home,
-    //     map: map,
-    //     icon: 'http://maps.google.com/mapfiles/ms/icons/green-dot.png',
-    //     title: 'Work'
-    // });
-
-
-
-    // marker_home.addListener('click', function() {
-    //     infowindow.open(map, marker_home);
-    //     map.panTo(marker_home.getPosition());
-
-    // });
-
-    // var infowindow = new google.maps.InfoWindow({
-    //     content: '<div class="popup_container">' + marker_home.title + '</div>'
-    // });
-
     var service = new google.maps.places.PlacesService(map);
     service.nearbySearch({
         location: home,
@@ -194,7 +133,6 @@ function initMap() {
         });
 
         markers.push(marker);
-
         google.maps.event.addListener(marker, 'click', function() {
             createInfoWindow(marker);
         });
@@ -202,11 +140,31 @@ function initMap() {
 }
 
 function createInfoWindow(marker) {
-    infowindow = new google.maps.InfoWindow({
+    var infowindow = new google.maps.InfoWindow({
         maxWidth: 300,
-        name: marker.name
+        name: ''
     });
+        searchwiki(marker.name)
+
     infowindow.setContent(marker.name);
     infowindow.open(map, marker);
     map.panTo(marker.getPosition());
 }
+
+
+
+ function searchwiki(search) {
+     $.ajax({
+         type: "GET",
+         url: 'https://de.wikipedia.org/w/api.php?format=json&action=query&generator=search&gsrnamespace=0&gsrlimit=10&prop=pageimages|extracts&pilimit=max&exintro&explaintext&exsentences=1&exlimit=max&gsrsearch='+ search +'&callback=?',  
+        contentType: "application/json; charset=utf-8",
+         async: false,
+         dataType: "json",
+         success: function(data, textStatus, jqXHR) {
+             console.log(data);
+         },
+         error: function(errorMessage) {
+            console.log(errorMessage);
+         }
+     });
+ }
