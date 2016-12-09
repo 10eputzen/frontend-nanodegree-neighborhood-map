@@ -31,19 +31,7 @@ function AppViewModel() {
         var mark = markers.find(function(o) {
                 return o.name === obj.name;
             })
-            // var info = infowindows.find(function(o) {
-            //     return o.name === obj.name;
-            // })
         createInfoWindow(mark);
-
-        // if (isInfoWindowOpen(info)) {
-        //     info.close(map, mark);
-        // } else {
-        //     map.panTo(mark.getPosition());
-        //     info.open(map, mark);
-        // }
-
-        // infowindows.push(infowindow);
     };
 
     self.currentFilter = ko.observable("");
@@ -51,16 +39,6 @@ function AppViewModel() {
 
     self.filterMarkers = function() {
         reArrangeObjects(result);
-        // var res = [];
-        // if (!self.currentFilter()) {
-        //     res = self.listOfObject;
-        // } else {
-        //     res = ko.utils.arrayFilter(self.listOfObject, function(list) {
-
-        //         return stringStartsWith(list.title.toLowerCase(), self.currentFilter());
-        //     });
-        // }
-        // reArrangeObjects(res);
     };
 }
 
@@ -83,7 +61,7 @@ var stringStartsWith = function(string, startsWith) {
 var result = [];
 var markers = [];
 var contents = [];
-var infowindows = [];
+var infowindow = [];
 
 ko.applyBindings(new AppViewModel());
 
@@ -145,7 +123,6 @@ function createInfoWindow(marker) {
         name: ''
     });
         searchwiki(marker.name)
-
     infowindow.setContent(marker.name);
     infowindow.open(map, marker);
     map.panTo(marker.getPosition());
