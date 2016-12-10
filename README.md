@@ -19,7 +19,7 @@ The Home Marker should show up as a green marker icon. The places have a default
 
 3) An infowindow will open
 
-**Infowindow**
+**Infowindow:**
 An infowindow contains the title, a description and an image to the specific place of the marker. There will only be one infowindow at a time.
 
 ## Installation
@@ -27,9 +27,9 @@ An infowindow contains the title, a description and an image to the specific pla
  1. Download the repository
  2. Unzip the repository
 
- 3a) For Testing the application offline, install the following [Chrome Plugin](https://chrome.google.com/webstore/detail/allow-control-allow-origi/nlfbmbojpeacfghkpbjhddihlkkiljbi?hl=de). It is needed to allow requests to any site with ajax from any source
+ a) For Testing the application offline, install the following [Chrome Plugin](https://chrome.google.com/webstore/detail/allow-control-allow-origi/nlfbmbojpeacfghkpbjhddihlkkiljbi?hl=de). It is needed to allow requests to any site with ajax from any source
 
- 3b) If you have your own webserver, you don't need to install the plugin.
+ b) If you have your own webserver, you don't need to install the plugin.
 
- 4. Open the index.html with Chrome.
+ 3. Open the index.html with Chrome.
 
