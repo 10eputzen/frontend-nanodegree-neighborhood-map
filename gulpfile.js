@@ -19,11 +19,12 @@ var autoprefixer = require('gulp-autoprefixer');
 var uglify = require('gulp-uglify');
 var minifyHtml = require('gulp-minify-html');
 var mainBowerFiles = require('main-bower-files');
-
-
+var gulpFilter = require('gulp-filter');
+var webpack = require('webpack-stream');
+var less = require('gulp-less');
 
 // Gulp default task
-gulp.task('default', ['minify-css', 'scripts']);
+gulp.task('default', ['minify-css', 'scripts','main-bower-files','copy-bs-fonts']);
 
 gulp.task('minify-css', function() {
     gulp.src('app/css/*.css')
@@ -38,14 +39,25 @@ gulp.task('scripts', function() {
         .pipe(gulp.dest('dist/js/'));
 });
 
-// gulp.task('html', function() {
-//     gulp.src('app/*.html')
-//         .pipe(minifyHtml())
-//         .pipe(gulp.dest('dist/'));
-// });
 
+gulp.task('main-bower-files', function() {
+	var filterJS = gulpFilter('**/*.js', { restore: true });
+	var filterCSS = gulpFilter('**/*.less', { restore: true });
+    return gulp.src(mainBowerFiles(/* options */), { base: 'app/bower_components' })
+    	.pipe(filterJS)
+    	.pipe(uglify())
+    	.pipe(filterJS.restore)
 
-gulp.task('watch', function() {
-    gulp.watch('app/css/*.css', ['minify-css']);
-    gulp.watch('scripts/**.js', ['scripts']);
+    	.pipe(filterCSS)
+    	.pipe(less())
+    	.pipe(minifyCSS())
+    	.pipe(filterCSS.restore)
+
+        .pipe(gulp.dest('dist/bower_components'));
 });
+
+gulp.task('copy-bs-fonts', function(){
+  return gulp.src('app/bower_components/bootstrap/fonts/*.{eot,svg,ttf,woff,woff2}')
+    .pipe(gulp.dest('dist/bower_components/bootstrap/fonts/'));
+});
+
