@@ -14,7 +14,9 @@ The Filter Input Box filteres the Places results on every character input.
 The Home Marker should show up as a green marker icon. The places have a default red marker. Clicking a marker should have three effects:
 
 1) Map is panned to the marker
+
 2) Marker is animated for 3 seconds
+
 3) An infowindow will open
 
 **Infowindow**
