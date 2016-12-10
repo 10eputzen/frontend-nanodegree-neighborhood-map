@@ -84,11 +84,8 @@ function showMarkers(list) {
     }
 }
 
-var markers = [];
-
-
-
 var map, infowindow;
+var markers = [];
 var homeMarkers = [];
 var homeIcon = 'https://maps.google.com/mapfiles/ms/icons/green-dot.png';
 var firstInit = true;
@@ -96,7 +93,6 @@ self.currentLocation = hofheim;
 
 function initMap() {
     var home = self.currentLocation;
-
     map = new google.maps.Map(document.getElementById('map'), {
         center: {
             lat: home.lat,
@@ -158,8 +154,6 @@ function initMap() {
 
     function initMarkers() {
         var homeMarker;
-
-
         if (homeMarkers.length > 0)
             homeMarker = homeMarkers[0];
         else {
