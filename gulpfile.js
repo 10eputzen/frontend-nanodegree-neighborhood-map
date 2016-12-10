@@ -18,10 +18,12 @@ var minifyCSS = require('gulp-minify-css');
 var autoprefixer = require('gulp-autoprefixer');
 var uglify = require('gulp-uglify');
 var minifyHtml = require('gulp-minify-html');
+var mainBowerFiles = require('main-bower-files');
+
 
 
 // Gulp default task
-gulp.task('default', ['minify-css', 'scripts','html']);
+gulp.task('default', ['minify-css', 'scripts']);
 
 gulp.task('minify-css', function() {
     gulp.src('app/css/*.css')
@@ -33,16 +35,14 @@ gulp.task('minify-css', function() {
 gulp.task('scripts', function() {
     gulp.src('app/js/*.js')
         .pipe(uglify())
-        .pipe(gulp.dest('dist/scripts/'));
+        .pipe(gulp.dest('dist/js/'));
 });
 
-gulp.task('html', function() {
-    gulp.src('app/*.html')
-        .pipe(minifyHtml())
-        .pipe(gulp.dest('dist/'));
-});
-
-
+// gulp.task('html', function() {
+//     gulp.src('app/*.html')
+//         .pipe(minifyHtml())
+//         .pipe(gulp.dest('dist/'));
+// });
 
 
 gulp.task('watch', function() {

@@ -1,2 +1,4 @@
 node_modules/
 app/imoscout_key.txt
+app/bower_components/
+dist/bower_components/
