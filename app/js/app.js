@@ -25,8 +25,6 @@ var rockenberg = new dropDownLocation("Rockenberg", 50.4302590, 8.7357830);
 var berlin = new dropDownLocation("Berlin", 52.5200070, 13.4049540);
 
 function AppViewModel() {
-    var originalMarkers = markers.slice();
-
     function reArrangeObjects(res) {
         self.list.Objects.removeAll();
 
@@ -60,7 +58,6 @@ function AppViewModel() {
             res = filteredMarkers;
         } else {
             res = ko.utils.arrayFilter(filteredMarkers, function(list) {
-                // if (stringStartsWith(list.name.toLowerCase(), self.currentFilter().toLowerCase()))
                 if (list.name.toLowerCase().includes(self.currentFilter().toLowerCase()))
                     return list;
                 else
@@ -86,14 +83,6 @@ function showMarkers(list) {
         list[i].setMap(map);
     }
 }
-
-function stringStartsWith(string, startsWith) {
-    string = string || "";
-    if (startsWith.length > string.length)
-        return false;
-    return string.substring(0, startsWith.length) === startsWith;
-}
-
 
 var markers = [];
 
@@ -146,14 +135,6 @@ function initMap() {
         // For each place, get the icon, name and location.
         var bounds = new google.maps.LatLngBounds();
         places.forEach(function(place) {
-            var icon = {
-                url: place.icon,
-                size: new google.maps.Size(71, 71),
-                origin: new google.maps.Point(0, 0),
-                anchor: new google.maps.Point(17, 34),
-                scaledSize: new google.maps.Size(25, 25)
-            };
-
             // Create a marker for each place.
             homeMarkers.push(new google.maps.Marker({
                 map: map,
@@ -279,6 +260,7 @@ function setMarkerContent(marker) {
 
 // Create the Info Window the the Details provided in each marker
 var infowindow = [];
+
 function createInfoWindow(marker) {
     var width = 200;
     if (infowindow.length !== 0)
@@ -292,7 +274,7 @@ function createInfoWindow(marker) {
     map.panTo(marker.getPosition());
     marker.setAnimation(google.maps.Animation.BOUNCE);
     setTimeout(function() {
-        marker.setAnimation(null)
+        marker.setAnimation(null);
     }, 3000);
 }
 
