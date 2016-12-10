@@ -1,19 +1,15 @@
-// add to footer
+//Toggle the Menu
 $("#menu-toggle").click(function(e) {
     e.preventDefault();
     $("#wrapper").toggleClass("toggled");
 });
 
 var self = this;
-var map, infowindow;
-
-
 
 var ObjectList = function() {
     var that = this;
     that.Objects = ko.observableArray();
 };
-
 
 self.list = new ObjectList();
 
@@ -28,13 +24,8 @@ var munich = new dropDownLocation("Munich", 48.1351250, 11.5819810);
 var rockenberg = new dropDownLocation("Rockenberg", 50.4302590, 8.7357830);
 var berlin = new dropDownLocation("Berlin", 52.5200070, 13.4049540);
 
-
-
-
 function AppViewModel() {
     var originalMarkers = markers.slice();
-
-    reArrangeObjects(markers);
 
     function reArrangeObjects(res) {
         self.list.Objects.removeAll();
@@ -52,6 +43,14 @@ function AppViewModel() {
     };
 
     self.currentFilter = ko.observable("");
+
+    self.worker = ko.computed(function() {
+        if (self.currentFilter())
+            self.filterMarkers();
+        else
+            reArrangeObjects(markers);
+    }, this);
+
 
     self.filterMarkers = function() {
         var filteredMarkers = markers.slice();
@@ -100,10 +99,11 @@ var markers = [];
 
 
 
-
-self.currentLocation = hofheim;
+var map, infowindow;
 var homeMarkers = [];
+var homeIcon = 'https://maps.google.com/mapfiles/ms/icons/green-dot.png';
 var firstInit = true;
+self.currentLocation = hofheim;
 
 function initMap() {
     var home = self.currentLocation;
@@ -159,7 +159,7 @@ function initMap() {
                 map: map,
                 title: place.name,
                 position: place.geometry.location,
-                icon: 'http://maps.google.com/mapfiles/ms/icons/green-dot.png',
+                icon: homeIcon,
                 content: 'Home',
             }));
 
@@ -175,16 +175,18 @@ function initMap() {
     });
 
 
-
     function initMarkers() {
         var homeMarker;
+
+
         if (homeMarkers.length > 0)
             homeMarker = homeMarkers[0];
         else {
+            //Setting the initial Home Marker
             homeMarker = new google.maps.Marker({
                 map: map,
                 position: home,
-                icon: 'http://maps.google.com/mapfiles/ms/icons/green-dot.png',
+                icon: homeIcon,
                 content: 'Home',
             });
             homeMarkers.push(homeMarker);
@@ -200,10 +202,12 @@ function initMap() {
             markers = [];
             if (res) {
                 wikiPages = res.query.pages;
+                //Loop over Every Wikientry and create a marker for the given coordinates
                 for (var prop in wikiPages) {
                     createMarker(wikiPages[prop]);
                 }
 
+                //Set the Marker Content to the description provided by the Wiki Request
                 for (var i = 0; i < markers.length; i++) {
                     setMarkerContent(markers[i]);
                 }
@@ -245,6 +249,7 @@ function initMap() {
 var queryWikiBase = 'https://en.wikipedia.org/w/api.php?action=query&prop=info&pageids=';
 var queryWikiAppend = '&inprop=url&format=json';
 
+//Setting the title, image nad description of the Marker/InfoWindow
 function setMarkerContent(marker) {
     var name = '<h4>' + marker.name + '</h4>';
     var description = '';
@@ -272,8 +277,8 @@ function setMarkerContent(marker) {
     }
 }
 
+// Create the Info Window the the Details provided in each marker
 var infowindow = [];
-
 function createInfoWindow(marker) {
     var width = 200;
     if (infowindow.length !== 0)
@@ -285,8 +290,14 @@ function createInfoWindow(marker) {
     infowindow.setContent(marker.content);
     infowindow.open(map, marker);
     map.panTo(marker.getPosition());
+    marker.setAnimation(google.maps.Animation.BOUNCE);
+    setTimeout(function() {
+        marker.setAnimation(null)
+    }, 3000);
 }
 
+
+//Searching the Wiki for Places around the Home Marker
 function searchwiki(marker) {
     var baseUrl = 'https://en.wikipedia.org/w/api.php?action=query&prop=coordinates%7Cpageimages%7Cpageterms&colimit=50&piprop=thumbnail&pithumbsize=144&pilimit=50&wbptterms=description&generator=geosearch&ggscoord=';
     var pos = marker.position;
@@ -302,30 +313,5 @@ function queryWiki(url) {
         dataType: 'jsonp',
         type: 'GET',
         headers: { 'Api-User-Agent': 'Example/1.0' },
-        // success: function(data, textStatus, jqXHR) {
-        //     console.log(data);
-        // },
-        // error: function(errorMessage) {
-        //     var msg = "An Error has occured while getting data from Wikipedia. \nPlease refresh the page.";
-        //     alert(msg);
-        // }
     });
 }
-
-
-
-// $.ajax({
-//     type: "GET",
-//     // url: 'https://de.wikipedia.org/w/api.php?format=json&action=query&generator=search&gsrnamespace=0&gsrlimit=10&prop=pageimages|extracts&pilimit=max&exintro&explaintext&exsentences=1&exlimit=max&gsrsearch=' + search + '&callback=?',
-//     url: wikiUrl,
-//     contentType: "application/json; charset=utf-8",
-//     async: true,
-//     dataType: "json",
-//     success: function(data, textStatus, jqXHR) {
-//         console.log(data);
-//         console.log(data.responseText);
-//     },
-//     error: function(errorMessage) {
-//         console.log(errorMessage);
-//     }
-// });
