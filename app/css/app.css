@@ -1,11 +1,11 @@
-html, body {
-   height: 100%;
-
+html,
+body {
+    height: 100%;
 }
 
 body {
-	font-size: 2em;
-	color: black;
+    font-size: 1.8em;
+    color: black;
 }
 
 #map {
@@ -13,21 +13,82 @@ body {
     // margin: 15px;
 }
 
-
-
-.location-headline {
-	font-size: 1.6em;
-	padding: 10px;
+#pac-input:focus {
+    border-color: #4d90fe;
 }
 
-.object-list{
-	padding: 0 10px 10px 10px;
+.location-headline {
+    font-size: 1.2em;
+    padding: 10px;
+}
+
+.object-list {
+    padding: 0 10px;
 }
 
 .object-list-item {
-	padding-top: 10px;
+    // padding-top: 10px;
 }
 
 .object-list-item a {
-	color: black;
+    color: black;
+    display: inline-block;
+    padding: 10px 0;
+}
+
+.result-span {
+    font-size: 0.8em;
+    padding-left: 10px;
+    font-weight: normal;
+}
+
+.filter-text {
+    margin: 15px;
+}
+
+hr {
+    margin: 0;
+}
+
+.controls {
+    border: 1px solid transparent;
+    border-radius: 2px 0 0 2px;
+    box-sizing: border-box;
+    -moz-box-sizing: border-box;
+    height: 32px;
+    outline: none;
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.3);
+}
+
+.filter-form {
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.3);
+}
+
+#pac-input {
+    background-color: #fff;
+    font-size: 15px;
+    font-weight: 300;
+    text-overflow: ellipsis;
+    width: 100%;
+}
+
+#pac-input:focus {
+    border-color: #4d90fe;
+}
+
+.pac-container {}
+
+#type-selector {
+    color: #fff;
+    background-color: #4d90fe;
+    padding: 5px 11px 0px 11px;
+}
+
+#type-selector label {
+    font-size: 13px;
+    font-weight: 300;
+}
+
+#target {
+    width: 345px;
 }
