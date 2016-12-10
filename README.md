@@ -24,7 +24,7 @@ An infowindow contains the title, a description and an image to the specific pla
 
 ## Installation
 
- 1. Download the repository
+ 1. Download or clone the repository
  2. Unzip the repository
  3. Run "bower install" in the main folder to install the bower dependencies.
 
