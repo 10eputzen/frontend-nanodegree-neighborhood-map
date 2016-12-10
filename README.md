@@ -24,13 +24,13 @@ An infowindow contains the title, a description and an image to the specific pla
 
 ## Installation
 
-1. Download or clone the repository
-2. Unzip the repository
-3. Run "bower install" in the main folder to install the bower dependencies.
+ 1. Download or clone the repository
+ 2. Unzip the repository
+ 3. Run "bower install" in the main folder to install the bower dependencies.
 
-3a) For Testing the application offline, install the following [Chrome Plugin](https://chrome.google.com/webstore/detail/allow-control-allow-origi/nlfbmbojpeacfghkpbjhddihlkkiljbi?hl=de). It is needed to allow requests to any site with ajax from any source
+ a) For Testing the application offline, install the following [Chrome Plugin](https://chrome.google.com/webstore/detail/allow-control-allow-origi/nlfbmbojpeacfghkpbjhddihlkkiljbi?hl=de). It is needed to allow requests to any site with ajax from any source
 
-3b) If you have your own webserver, you don't need to install the plugin.
+ b) If you have your own webserver, you don't need to install the plugin.
 
-4. Open the index.html with Chrome.
+ 4. Open the index.html with Chrome.
 
