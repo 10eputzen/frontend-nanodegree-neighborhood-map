@@ -1,10 +1,11 @@
 //Toggle the Menu
-$("#menu-toggle").click(function(e) {
+$('#menu-toggle').click(function(e) {
     e.preventDefault();
-    $("#wrapper").toggleClass("toggled");
+    $('#wrapper').toggleClass('toggled');
 });
 
 var self = this;
+var firstInit = true;
 
 var ObjectList = function() {
     var that = this;
@@ -19,10 +20,10 @@ var dropDownLocation = function(name, lat, lng) {
     this.lng = lng;
 };
 
-var hofheim = new dropDownLocation("Hofheim(Taunus)", 50.0900539, 8.4624332);
-var munich = new dropDownLocation("Munich", 48.1351250, 11.5819810);
-var rockenberg = new dropDownLocation("Rockenberg", 50.4302590, 8.7357830);
-var berlin = new dropDownLocation("Berlin", 52.5200070, 13.4049540);
+var hofheim = new dropDownLocation('Hofheim(Taunus)', 50.0900539, 8.4624332);
+var munich = new dropDownLocation('Munich', 48.1351250, 11.5819810);
+var rockenberg = new dropDownLocation('Rockenberg', 50.4302590, 8.7357830);
+var berlin = new dropDownLocation('Berlin', 52.5200070, 13.4049540);
 
 function AppViewModel() {
     function reArrangeObjects(res) {
@@ -37,16 +38,23 @@ function AppViewModel() {
         var mark = markers.find(function(o) {
             return o.name === obj.name;
         });
-        createInfoWindow(mark);
+        updateInfoWindow(mark);
     };
 
-    self.currentFilter = ko.observable("");
+    self.currentFilter = ko.observable('');
 
+    //The behaviour is a bit strange since it is not called when you leave out the currentFilter().
+    //But the filterMarkers also needs to happen when the input field is empty!
     self.worker = ko.computed(function() {
         if (self.currentFilter())
             self.filterMarkers();
-        else
-            reArrangeObjects(markers);
+        else {
+            if (firstInit) {
+                reArrangeObjects(markers);
+                firstInit = false;
+            } else
+                self.filterMarkers();
+        }
     }, this);
 
 
@@ -87,8 +95,10 @@ function showMarkers(list) {
 var map, infowindow;
 var markers = [];
 var homeMarkers = [];
+var infowindow = [];
 var homeIcon = 'https://maps.google.com/mapfiles/ms/icons/green-dot.png';
-var firstInit = true;
+var infoWindowWidth = 200;
+
 self.currentLocation = hofheim;
 
 function initMap() {
@@ -100,9 +110,14 @@ function initMap() {
         },
         zoom: 16
     });
+
+
+    infowindow = new google.maps.InfoWindow({
+        maxWidth: infoWindowWidth,
+        name: '',
+    });
     if (firstInit) {
         initMarkers();
-        firstInit = false;
     }
     // Create the search box and link it to the UI element.
     var input = document.getElementById('pac-input');
@@ -147,6 +162,7 @@ function initMap() {
                 bounds.extend(place.geometry.location);
             }
         });
+
         map.fitBounds(bounds);
         initMarkers();
     });
@@ -168,7 +184,7 @@ function initMap() {
         }
 
         google.maps.event.addListener(homeMarker, 'click', function() {
-            createInfoWindow(homeMarker);
+            updateInfoWindow(homeMarker);
         });
 
 
@@ -183,16 +199,18 @@ function initMap() {
                 }
 
                 //Set the Marker Content to the description provided by the Wiki Request
-                for (var i = 0; i < markers.length; i++) {
-                    setMarkerContent(markers[i]);
-                }
+                markers.forEach(function(entry) {
+                    setMarkerContent(entry);
+                });
                 ko.applyBindings(new AppViewModel());
-            }
-        }, function(err) {
-            console.log(err);
-            var msg = "An Error has occured while getting data from Wikipedia. \nPlease refresh the page.";
+            } else
+                alert('No Data available.');
+        }).catch(function(err) {
+            var msg = 'An Error has occured while getting data from Wikipedia. \nPlease refresh the page.';
             alert(msg);
+            console.log(err);
         });
+
     }
 
 
@@ -216,20 +234,23 @@ function initMap() {
         });
         markers.push(marker);
         google.maps.event.addListener(marker, 'click', function() {
-            createInfoWindow(marker);
+            updateInfoWindow(marker);
         });
     }
 }
 
 var queryWikiBase = 'https://en.wikipedia.org/w/api.php?action=query&prop=info&pageids=';
 var queryWikiAppend = '&inprop=url&format=json';
+var noDescription = 'No description available';
+self.showErrorMessage = true;
+
 
 //Setting the title, image nad description of the Marker/InfoWindow
 function setMarkerContent(marker) {
     var name = '<h4>' + marker.name + '</h4>';
-    var description = '';
-    if (marker.description)
-        description = marker.description;
+    var description;
+
+    marker.description ? description = marker.description : description = noDescription;
 
     var imageSource = '';
     if (marker.image) {
@@ -241,6 +262,8 @@ function setMarkerContent(marker) {
         var pageId = marker.pageId.toString();
         var url = queryWikiBase + pageId + queryWikiAppend;
         var fullUrl;
+        var showErrorMessage = true;
+        var errorMsg = 'An Error has occured while getting data from Wikipedia. \nPlease refresh the page.';
         queryWiki(url).then(function(res) {
             if (res) {
                 fullUrl = res.query.pages[pageId].fullurl;
@@ -248,30 +271,24 @@ function setMarkerContent(marker) {
                 var content = name + '<p>' + description + '</p>' + imageSource;
                 marker.content = content;
             }
+        }).catch(function(err) {
+            self.showErrorMessage ? alert(errorMsg) : true;
+            self.showErrorMessage = false;
         });
     }
 }
 
-// Create the Info Window the the Details provided in each marker
-var infowindow = [];
-
-function createInfoWindow(marker) {
-    var width = 200;
-    if (infowindow.length !== 0)
-        infowindow.close();
-    infowindow = new google.maps.InfoWindow({
-        maxWidth: width,
-        name: marker.name,
-    });
+// Update the Info Window the the Details provided in each marker
+function updateInfoWindow(marker) {
+    infowindow.length !== 0 && infowindow.close();
     infowindow.setContent(marker.content);
     infowindow.open(map, marker);
     map.panTo(marker.getPosition());
     marker.setAnimation(google.maps.Animation.BOUNCE);
     setTimeout(function() {
         marker.setAnimation(null);
-    }, 3000);
+    }, 1400);
 }
-
 
 //Searching the Wiki for Places around the Home Marker
 function searchwiki(marker) {
@@ -290,4 +307,10 @@ function queryWiki(url) {
         type: 'GET',
         headers: { 'Api-User-Agent': 'Example/1.0' },
     });
+}
+
+
+function handleError() {
+    var msg = 'Problems while loading Google Maps. Please refresh the page and try again.';
+    alert(msg);
 }
